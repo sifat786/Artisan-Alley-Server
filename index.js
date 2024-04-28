@@ -27,9 +27,21 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // await client.connect();
+    const craftCollection = client.db("craftDB").collection("CRAFTS");
 
+    //! POST
+    app.post('/crafts', async(req, res) => {
+      const newCrafts = req.body;
+      const result = await craftCollection.insertOne(newCrafts);
+      res.send(result);
+    })
 
-
+    //! GET
+    app.get('/crafts', async(req, res) => {
+      const cursor = craftCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
 
     // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
