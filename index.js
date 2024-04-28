@@ -26,7 +26,7 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    // await client.connect();
+    await client.connect();
     const craftCollection = client.db("craftDB").collection("CRAFTS");
 
     //! POST
@@ -50,7 +50,13 @@ async function run() {
       res.send(result);
     })
 
-    // await client.db("admin").command({ ping: 1 });
+    app.get('/craftsByEmail/:email', async(req, res) => {
+      const cursor = craftCollection.find({email: req.params.email})
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+    await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // await client.close();
