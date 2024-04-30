@@ -26,9 +26,11 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    await client.connect();
+    // await client.connect();
     const craftCollection = client.db("craftDB").collection("CRAFTS");
+    const categoryCollection = client.db("craftDB").collection('CATEGORIES');
 
+    //* craft related api
     //! GET
     app.get('/crafts', async(req, res) => {
       const cursor = craftCollection.find();
@@ -87,7 +89,29 @@ async function run() {
       res.send(result);
     })
 
-    await client.db("admin").command({ ping: 1 });
+
+    //* categories related api:
+    app.get('/arts', async(req, res) => {
+      const cursor = categoryCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+    app.get('/arts/:id', async(req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await categoryCollection.findOne(query);
+      res.send(result);
+    })
+
+    app.get('/arts/:category', async(req, res) => {
+      const category = req.params.category;
+      const cursor = categoryCollection.find({category: category});
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+    // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // await client.close();
