@@ -7,9 +7,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 //? middleware:
-app.use(cors({
-    origin: ["http://localhost:5173", "http://localhost:5174", "https://artisan-alley-cc33d.web.app"]
-  }));
+app.use(cors());
 app.use(express.json());
 
 //? mongodb:
@@ -97,7 +95,7 @@ async function run() {
       res.send(result);
     })
 
-    app.get('/arts/:id', async(req, res) => {
+    app.get('/artsById/:id', async(req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await categoryCollection.findOne(query);
